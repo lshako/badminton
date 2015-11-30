@@ -31,4 +31,11 @@ module Helpers {
 		var hours = value / 3600;
 		return hours.format("%02d") + ":" + minutes.format("%02d") + ":" + seconds.format("%02d");
 	}
+
+	function absolute(value) {
+		if(value > 0) {
+			return value;
+		}
+		return -value;
+	}
 }

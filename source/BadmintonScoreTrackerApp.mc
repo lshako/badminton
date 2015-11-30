@@ -16,6 +16,9 @@ class BadmintonScoreTrackerApp extends App.AppBase {
 		match.listener = self;
 		var timer = new Timer.Timer();
 		timer.start(method(:redraw), 1000, true);
+
+		var sensorTimer = new Timer.Timer();
+		sensorTimer.start(method(:monitor), 50, true);
 		//test
 		//Test.test();
 	}
@@ -34,6 +37,22 @@ class BadmintonScoreTrackerApp extends App.AppBase {
 	function redraw() {
 		if(match.hasBegun()) {
 			Ui.requestUpdate();
+		}
+	}
+
+	function monitor() {
+		var info = Sensor.getInfo();
+
+		if(info has :accel && info.accel != null) {
+			var accel = info.accel;
+			var xAccel = accel[0];
+			var yAccel = accel[1];
+
+			//spot low acceleration value
+			var hit = 15;
+			if(Helpers.absolute(xAccel) > hit || Helpers.absolute(yAccel) > hit) {
+				Sys.println("hit detected xaccel=" + xAccel + " yaccel=" + yAccel);
+			}
 		}
 	}
 
