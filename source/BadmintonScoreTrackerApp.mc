@@ -48,10 +48,17 @@ class BadmintonScoreTrackerApp extends App.AppBase {
 			var xAccel = accel[0];
 			var yAccel = accel[1];
 
-			//spot low acceleration value
-			var hit = 15;
+			//spot high acceleration value
+			var hit = 2600;
 			if(Helpers.absolute(xAccel) > hit || Helpers.absolute(yAccel) > hit) {
 				Sys.println("hit detected xaccel=" + xAccel + " yaccel=" + yAccel);
+				Attention.vibrate([new Attention.VibeProfile(80, 100)]);
+			}
+
+			hit = 3300;
+			if(Helpers.absolute(xAccel) > hit || Helpers.absolute(yAccel) > hit) {
+				Sys.println("hit detected xaccel=" + xAccel + " yaccel=" + yAccel);
+				Attention.playTone(Attention.TONE_START);
 			}
 		}
 	}
