@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/openjdk:12-jdk
+    steps:
+      - checkout
+      - run:
+          name: generate private key
+          command: openssl genrsa -out developer_key.pem 4096 && openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
+      - run:
+          name: compile application
+          command: monkeyc -f monkey.jungle -d fenix5plus -o badminton.prg -y developer_key.der --unit-test
+      - run:
+          name: launch simulator
+          command: connectiq
+      - run:
+          name: run tests
+          command: monkeydo badminton.prg fenix5plus -t
