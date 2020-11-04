@@ -4,6 +4,7 @@ using Toybox.ActivityRecording as Recording;
 using Toybox.Activity as Activity;
 using Toybox.FitContributor as Contributor;
 using Toybox.WatchUi as Ui;
+using Toybox.Application.Storage;
 
 class Match {
 
@@ -30,6 +31,45 @@ class Match {
 	hidden var session_field_set_score_player_2;
 	hidden var session_field_score_player_1;
 	hidden var session_field_score_player_2;
+
+	static function saveToStorage(match) {
+		Storage.setValue("match.type", match.type == :single ? 1 : 2);
+		Storage.setValue("match.server", match.server);
+		Storage.setValue("match.maximum_points", match.maximum_points);
+		Storage.setValue("match.absolute_maximum_points", match.absolute_maximum_points);
+		Storage.setValue("match.server", match.server);
+		Storage.setValue("match.sets.number", match.sets.size());
+		for(var i = 1; i < match.sets.size(); i++) {
+			if(sets[i] != -1) {
+				sets[i].saveState("match.set." + i);
+			}
+		}
+	}
+
+	static function createFromStorage() {
+		var match_type = Storage.getValue("match.type") == 1 ? :single : :double;
+		var sets_number = Storage.getValue("match.sets.number");
+		var mp = Storage.getValue("match.maximum_points");
+		var amp = Storage.getValue("match.absolute_maximum_points");
+		var match_beginner = Storage.getValue("match.set.0.beginner");
+		//create match from stored information
+		var match = new Match(match_type, sets_number, match_beginner, mp, amp);
+		//adjust match state
+		match.server = Storage.getValue("match.server");
+		//restore sets
+		for(var i = 1; i < sets.size(); i++) {
+			match.sets[i] = -1;
+			var prefix = "match.sets." + i;
+			var beginner = Storage.getValue(prefix + ".beginner");
+			if(beginner != null) {
+				match.sets[i] = new MatchSet(beginner);
+				match.sets[i].restoreState("match.sets." + i);
+			}
+			else {
+				match.sets[i] = -1;
+			}
+		}
+	}
 
 	function initialize(match_type, sets_number, match_beginner, mp, amp) {
 		type = match_type;
@@ -262,5 +302,6 @@ class Match {
 		}
 		return null;
 	}
-
 }
+
+

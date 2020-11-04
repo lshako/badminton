@@ -3,6 +3,7 @@ using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Attention as Attention;
 using Toybox.Timer as Timer;
+using Toybox.Application.Storage;
 
 var bus;
 var match;
@@ -19,8 +20,16 @@ class BadmintonScoreTrackerApp extends App.AppBase {
 	}
 
 	function getInitialView() {
-		var view = new InitialView();
-		return [view, new InitialViewDelegate(view)];
+		//look for a saved match
+		if(Storage.getValue("match.type") != null) {
+			Sys.println("retrieve match saved");
+			$.match = Match.createFromStorage();
+			return [new MatchView(), new MatchViewDelegate()];
+		}
+		else {
+			var view = new InitialView();
+			return [view, new InitialViewDelegate(view)];
+		}
 	}
 
 	function onMatchBegin() {

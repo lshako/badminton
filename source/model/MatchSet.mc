@@ -20,6 +20,20 @@ class MatchSet {
 		scores = {:player_1 => 0, :player_2 => 0};
 	}
 
+	function saveState(prefix) {
+		Storage.setValue(prefix + ".beginner", beginner == :player_1 ? 1 : 2);
+		Storage.setValue(prefix + ".rallies", rallies);
+		Storage.setValue(prefix + ".scores", scores);
+		Storage.setValue(prefix + ".winner", winner == :player_1 ? 1 : 2);
+	}
+
+	function restoreState(prefix) {
+		beginner = Storage.getValue(prefix + ".beginner") == 1 ? :player_1 : :player_2;
+		rallies = Storage.getValue(prefix + ".rallies");
+		scores = Storage.getValue(prefix + ".scores");
+		winner = Storage.getValue(prefix + ".winner") == 1 ? :player_1 : :player_2;
+	}
+
 	function end(player) {
 		winner = player;
 	}
