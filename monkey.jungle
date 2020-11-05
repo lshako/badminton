@@ -1,5 +1,7 @@
 project.manifest = manifest.xml
 
+approachs60.resourcePath = resources;icons/40x33
+
 venu.resourcePath = resources;icons/60x60
 venud.resourcePath = resources;icons/60x60
 venusq.resourcePath = resources;icons/36x36
