@@ -18,7 +18,7 @@ class Match {
 	hidden var type; //type of the match, :single or :double
 	hidden var sets; //array of all sets containing -1 for a set not played
 
-	hidden var server; //in double, true if the player 1 (watch carrier) is currently the server
+	var server; //in double, true if the player 1 (watch carrier) is currently the server
 	hidden var winner; //store the winner of the match, :player_1 or :player_2
 
 	hidden var maximum_points;
@@ -57,7 +57,7 @@ class Match {
 		//adjust match state
 		match.server = Storage.getValue("match.server");
 		//restore sets
-		for(var i = 1; i < sets.size(); i++) {
+		for(var i = 1; i < sets_number; i++) {
 			match.sets[i] = -1;
 			var prefix = "match.sets." + i;
 			var beginner = Storage.getValue(prefix + ".beginner");
@@ -69,6 +69,7 @@ class Match {
 				match.sets[i] = -1;
 			}
 		}
+		return match;
 	}
 
 	function initialize(match_type, sets_number, match_beginner, mp, amp) {

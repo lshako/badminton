@@ -17,19 +17,32 @@ class BadmintonScoreTrackerApp extends App.AppBase {
 		//create bus for the whole application
 		$.bus = new Bus();
 		$.bus.register(self);
+
+		//Storage.clearValues();
+		//look for a saved match
+		if(Storage.getValue("match.type") != null) {
+			try {
+				Sys.println("retrieve match saved");
+				$.match = Match.createFromStorage();
+
+			}
+			catch(exception) {
+				//retrieving match from storage may fail if storage format has been updated
+				Sys.println("Unable to restore match");
+			}
+			finally {
+				Storage.clearValues();
+			}
+		}
 	}
 
 	function getInitialView() {
-		//look for a saved match
-		if(Storage.getValue("match.type") != null) {
-			Sys.println("retrieve match saved");
-			$.match = Match.createFromStorage();
+		if($.match != null) {
 			return [new MatchView(), new MatchViewDelegate()];
 		}
-		else {
-			var view = new InitialView();
-			return [view, new InitialViewDelegate(view)];
-		}
+		//if there is no saved match or if restoration failed, show initial view
+		var view = new InitialView();
+		return [view, new InitialViewDelegate(view)];
 	}
 
 	function onMatchBegin() {

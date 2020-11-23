@@ -22,14 +22,22 @@ class MatchSet {
 
 	function saveState(prefix) {
 		Storage.setValue(prefix + ".beginner", beginner == :player_1 ? 1 : 2);
-		Storage.setValue(prefix + ".rallies", rallies);
-		Storage.setValue(prefix + ".scores", scores);
+		var storage_rallies = [rallies.size()];
+		for(var i = 0; i < rallies.size(); i++) {
+			storage_rallies[i] = rallies.get(i) == :player_1 ? 1 : 2;
+		}
+		Storage.setValue(prefix + ".rallies", storage_rallies);
+		Storage.setValue(prefix + ".scores.player1", scores[:player1]);
+		Storage.setValue(prefix + ".scores.player2", scores[:player2]);
 		Storage.setValue(prefix + ".winner", winner == :player_1 ? 1 : 2);
 	}
 
 	function restoreState(prefix) {
 		beginner = Storage.getValue(prefix + ".beginner") == 1 ? :player_1 : :player_2;
-		rallies = Storage.getValue(prefix + ".rallies");
+		var storage_rallies = Storage.getValue(prefix + ".rallies");
+		for(var i = 0; i < storage_rallies.size(); i++) {
+			rallies.push(storage_rallies[i] == 0 ? :player_1 : :player_2);
+		}
 		scores = Storage.getValue(prefix + ".scores");
 		winner = Storage.getValue(prefix + ".winner") == 1 ? :player_1 : :player_2;
 	}
